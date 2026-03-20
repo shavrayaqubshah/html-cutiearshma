@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proposal</title>
+
+<style>
+
+body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-family:Arial;
+    background:url("b.jpg") center/cover no-repeat;
+    overflow:hidden;
+}
+
+/* Floating hearts */
+.heart{
+    position:absolute;
+    color:red;
+    animation:float 5s linear infinite;
+    font-size:20px;
+}
+@keyframes float{
+    0%{transform:translateY(100vh);opacity:1;}
+    100%{transform:translateY(-10vh);opacity:0;}
+}
+
+.box{
+    background:rgba(255,255,255,0.95);
+    padding:20px;
+    border-radius:20px;
+    text-align:center;
+    width:90%;
+    max-width:320px;
+    position:relative;
+}
+
+img{
+    width:100vw;          /* full screen width */
+    max-width:100%;
+    height:60vh;          /* large height */
+    object-fit:cover;     /* no stretching */
+    border-radius:0;      /* remove rounded corners */
+    margin-top:10px;
+    display:none;
+}
+
+h2{
+    font-size:18px;
+}
+
+button{
+    padding:10px 15px;
+    margin:5px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+.yes{background:#ff4d6d;color:white;}
+.no{background:#333;color:white;position:relative;}
+
+img{
+    width:100%;
+    border-radius:10px;
+    margin-top:10px;
+    display:none;
+}
+
+video{
+   width:100vw;          /* full screen width */
+    max-width:100%;
+    height:60vh;          /* large height */
+    object-fit:cover;     /* no stretching */
+    border-radius:0;      /* remove rounded corners */
+    margin-top:10px;
+    display:none;
+}
+
+/* Video text */
+#videoText{
+    position:absolute;
+    bottom:130px;
+    left:50%;
+    transform:translateX(-50%);
+    color:white;
+    font-weight:bold;
+    text-shadow:0 0 10px black;
+    display:none;
+}
+
+</style>
+</head>
+
+<body>
+
+<audio src="music.mp3" autoplay loop></audio>
+
+<div class="box">
+
+<h2 id="question">Happy Eid Arshma.. Mujhse Shaadi Karogi? ❤️</h2>
+
+<div id="buttons">
+    <button class="yes" onclick="yes1()">Yes</button>
+    <button class="no" onmouseover="moveNo()">No</button>
+</div>
+
+<img id="img">
+<video id="video"></video>
+<div id="videoText">Sacchi... Pinki Promise 💖</div>
+
+</div>
+
+<script>
+
+let noCount = 0;
+
+// hearts
+setInterval(()=>{
+    let heart = document.createElement("div");
+    heart.className="heart";
+    heart.innerHTML="💖";
+    heart.style.left=Math.random()*100+"vw";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),5000);
+},300);
+
+
+// ---------------- FIRST YES ----------------
+function yes1(){
+    let video = document.getElementById("video");
+    let img = document.getElementById("img");
+    let text = document.getElementById("videoText");
+
+    img.style.display="none";
+
+    // ❌ remove buttons
+    document.getElementById("buttons").innerHTML = "";
+
+    video.src="a.mp4";
+    video.style.display="block";
+    video.loop=true;
+    video.play();
+
+    text.style.display="block";
+
+    setTimeout(()=>{
+        video.pause();
+        video.style.display="none";
+        text.style.display="none";
+
+        // show 2nd question
+        document.getElementById("question").innerHTML =
+        "Ammi ke darr se to nahi bol rahi hai na?";
+
+        img.src="d.jpeg";
+        img.style.display="block";
+
+        document.getElementById("buttons").innerHTML = `
+            <button class="yes" onclick="ammiYes()">Haan Ammi ka darr hai</button>
+            <button class="no" onclick="ammiNo()">Nahi</button>
+        `;
+
+    },5000);
+}
+
+
+// ---------------- NO FIRST ----------------
+function moveNo(){
+    let btn = document.querySelector(".no");
+
+    let x = Math.random()*200 - 100;
+    let y = Math.random()*200 - 100;
+
+    btn.style.transform = `translate(${x}px,${y}px)`;
+
+    noCount++;
+
+    if(noCount >= 3){
+        let img = document.getElementById("img");
+
+        img.src="b.jpeg";
+        img.style.display="block";
+
+        document.getElementById("question").innerHTML =
+        "Chup Chap Haan Bolna Padega 😏";
+
+        setTimeout(resetFirst,5000);
+    }
+}
+
+
+// ---------------- RESET ----------------
+function resetFirst(){
+    noCount=0;
+
+    document.getElementById("question").innerHTML =
+    "Happy Eid Arshma.. Mujhse Shaadi Karogi? ❤️";
+
+    document.getElementById("buttons").innerHTML = `
+        <button class="yes" onclick="yes1()">Yes</button>
+        <button class="no" onmouseover="moveNo()">No</button>
+    `;
+
+    document.getElementById("img").style.display="none";
+}
+
+
+// ---------------- AMMI YES ----------------
+function ammiYes(){
+    let img = document.getElementById("img");
+
+    // show response
+    img.src = "e.jpeg";
+    img.style.display = "block";
+
+    document.getElementById("question").innerHTML =
+    "Maan Jaa na Yara ❤️";
+
+    // ❌ remove buttons temporarily
+    document.getElementById("buttons").innerHTML = "";
+
+    // ⏱ after 5 sec → revert back to 2nd question
+    setTimeout(()=>{
+        document.getElementById("question").innerHTML =
+        "Ammi ke darr se to nahi bol rahi hai na?";
+
+        img.src = "d.jpeg";
+
+        document.getElementById("buttons").innerHTML = `
+            <button class="yes" onclick="ammiYes()">Haan Ammi ka darr hai</button>
+            <button class="no" onclick="ammiNo()">Nahi</button>
+        `;
+    },5000);
+}
+
+
+// ---------------- AMMI NO ----------------
+function ammiNo(){
+    let img = document.getElementById("img");
+
+    document.getElementById("question").innerHTML =
+    " Phewwwww, was scared for a while, you may say NO..BUT I KNOW YOU LOVE YOU 😎";
+
+    // remove buttons
+    document.getElementById("buttons").innerHTML = "";
+
+   let images = ["1.jpg","2.jpg","3.jpg","4.jpg","5.jpg"];
+    let i = 0;
+
+    img.style.display = "block";
+
+    function showNext(){
+        if(i >= images.length){
+            setTimeout(showCollage, 1000); // optional collage at end
+            return;
+        }
+
+        img.style.opacity = 0;
+
+        setTimeout(()=>{
+            img.src = images[i];
+            img.style.opacity = 1;
+            i++;
+            setTimeout(showNext, 800); // ⏱ speed between images
+        },300);
+    }
+
+    showNext();
+}
+
+
+// ---------------- COLLAGE ----------------
+function showCollage(){
+    document.body.style.background="none";
+
+    let images = ["a.jpeg","c.jpeg","d.jpeg","e.jpeg","f.jpeg"];
+
+    images.forEach((src,i)=>{
+        let img = document.createElement("img");
+        img.src = src;
+        img.style.position="absolute";
+        img.style.width="30%";
+        img.style.left=(i%3)*30+"%";
+        img.style.top=Math.floor(i/3)*30+"%";
+        document.body.appendChild(img);
+    });
+}
+
+</script>
+
+</body>
+</html>
